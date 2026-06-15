@@ -13,7 +13,7 @@ It packs in lots of demanding features that allows your business to scale in no 
 
 ### 2. Requirements:
 
-* **Krayin**: v2.0.0 or higher.
+* **Krayin**: v2.2.3 or higher.
 
 
 ### 3. Installation:
@@ -27,19 +27,8 @@ composer require krayin/krayin-google-integration
 * Run these commands below to complete the setup
 
 ~~~
-php artisan migrate
+php artisan google:install
 ~~~
-
-~~~
-php artisan route:cache
-~~~
-
-~~~
-php artisan vendor:publish --force
-
--> Search GoogleServiceProvider navigate to it and then press enter to publish all assets and configurations.
-~~~
-
 
 ### 4. Configuration:
 
@@ -57,24 +46,6 @@ Breadcrumbs::for('google.meet.create', function (BreadcrumbTrail $trail) {
 });
 ```
 
-* Goto **config/krayin-vite.php** file and add following lines
-
-```php
-<?php
-
-return [
-    'viters' => [
-        // ...
-
-        'google' => [
-            'hot_file'                 => 'google-vite.hot',
-            'build_directory'          => 'google/build',
-            'package_assets_directory' => 'src/Resources/assets',
-        ],
-    ],
-];
-
-```
 
 * Goto **.env** file and add following lines
 
