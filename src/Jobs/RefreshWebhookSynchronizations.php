@@ -22,8 +22,10 @@ class RefreshWebhookSynchronizations implements ShouldQueue
     {
         Synchronization::query()
             ->whereNotNull('resource_id')
-            ->whereNull('expired_at')
-            ->orWhere('expired_at', '<', now()->addDays(2))
+            ->where(function ($query) {
+                $query->whereNull('expired_at')
+                    ->orWhere('expired_at', '<', now()->addDays(2));
+            })
             ->get()
             ->each->refreshWebhook();
     }
