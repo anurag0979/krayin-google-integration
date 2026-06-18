@@ -3,6 +3,7 @@
 namespace Webkul\Google\Console\Commands;
 
 use Illuminate\Console\Command;
+use Webkul\Google\Database\Seeders\DatabaseSeeder;
 
 class Install extends Command
 {
@@ -11,7 +12,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'google:install';
+    protected $signature = 'google:install {--seed : Seed demo Google Integration data}';
 
     /**
      * The console command description.
@@ -40,6 +41,15 @@ class Install extends Command
             '--tag'      => 'public',
             '--force'    => true,
         ]);
+
+        if ($this->option('seed')) {
+            $this->comment('Seeding demo data...');
+
+            $this->call('db:seed', [
+                '--class' => DatabaseSeeder::class,
+                '--force' => true,
+            ]);
+        }
 
         $this->info('Krayin Google Integration has been installed successfully.');
 
