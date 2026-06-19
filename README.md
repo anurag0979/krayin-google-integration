@@ -32,21 +32,6 @@ php artisan google:install
 
 ### 4. Configuration:
 
-* Goto **routes/breadcrumbs.php** file and add following lines
-
-```php
-Breadcrumbs::for('google.calendar.create', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
-    $trail->push(trans('google::app.calendar.index.title'), route('admin.google.index', ['route' => request('route')]));
-});
-
-Breadcrumbs::for('google.meet.create', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
-    $trail->push(trans('google::app.meet.index.title'), route('admin.google.index', ['route' => request('route')]));
-});
-```
-
-
 * Goto **.env** file and add following lines
 
 ```.env
@@ -92,23 +77,17 @@ return [
 ];
 ```
 
-* Goto **app/Http/Middleware/VerifyCsrfToken.php** file and add following line under $except array
+* Goto **bootstrap/app.php** file and add `'google/webhook'` to the CSRF token exception list inside the `withMiddleware` callback
 
 ```php
-protected $except = [
+->withMiddleware(function (Middleware $middleware) {
     // ...
-    'google/webhook',
-];
-```
 
-* Goto **app/Console/Kernel.php** file and update the schedule function with the following lines
-
-```php
-protected function schedule(Schedule $schedule)
-{
-    $schedule->job(new \Webkul\Google\Jobs\PeriodicSynchronizations())->everyFifteenMinutes();
-    $schedule->job(new \Webkul\Google\Jobs\RefreshWebhookSynchronizations())->daily();
-}
+    $middleware->validateCsrfTokens(except: [
+        // ...
+        'google/webhook',
+    ]);
+})
 ```
 
 ### 5. Clear Cache:

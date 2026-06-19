@@ -2,10 +2,13 @@
 
 namespace Webkul\Google\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Google\Console\Commands\Install;
+use Webkul\Google\Jobs\PeriodicSynchronizations;
+use Webkul\Google\Jobs\RefreshWebhookSynchronizations;
 use Webkul\User\Contracts\User;
 use Webkul\Google\Models\User as GoogleUser;
 
@@ -50,6 +53,22 @@ class GoogleServiceProvider extends ServiceProvider
         $this->registerProviders();
 
         $this->publishAssets();
+
+        $this->registerScheduledJobs();
+    }
+
+    /**
+     * Register the package's scheduled jobs.
+     *
+     * @return void
+     */
+    protected function registerScheduledJobs()
+    {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->job(new PeriodicSynchronizations())->everyFifteenMinutes();
+
+            $schedule->job(new RefreshWebhookSynchronizations())->daily();
+        });
     }
 
     /**
